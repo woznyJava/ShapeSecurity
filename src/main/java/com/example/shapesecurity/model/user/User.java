@@ -19,7 +19,6 @@ import java.util.List;
 @Entity
 @Table(name = "APP_USER")
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue
     private Integer id;

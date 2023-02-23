@@ -1,6 +1,10 @@
 package com.example.shapesecurity.shapeService;
 
 import com.example.shapesecurity.model.command.CreateShapeCommand;
+import com.example.shapesecurity.model.command.UpdateShapeCommand;
+import com.example.shapesecurity.model.dto.CircleDto;
+import com.example.shapesecurity.model.dto.RectangleDto;
+import com.example.shapesecurity.model.dto.SquareDto;
 import com.example.shapesecurity.model.shape.Circle;
 import com.example.shapesecurity.model.shape.Rectangle;
 import com.example.shapesecurity.model.shape.Shape;
@@ -84,7 +88,6 @@ public class ShapeServiceTests {
         CreateShapeCommand createUpdateShapeCommand = new CreateShapeCommand("RECTANGLE", map);
         Rectangle rectangle = new Rectangle(4.0, 5.0);
         when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(rectangle);
-
         shapeService.save(createUpdateShapeCommand);
 
         verify(shapeRepository).save(shapeArgumentCaptor.capture());
@@ -96,12 +99,55 @@ public class ShapeServiceTests {
     }
 
     @Test
-    public void testUpdateShapeCircle(){
+    public void testUpdateShapeCircle() {
         Circle circle = new Circle(2.0);
+        circle.setId(1);
+        CircleDto circleDto = new CircleDto(4.0);
+        Map<String, Double> map = new HashMap<>();
+        map.put("radius", 4.0);
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map);
 
+        when(updateService.update(updateShapeCommand)).thenReturn(circle);
+        when(shapeBuildService.buildShapeDto(circle)).thenReturn(circleDto);
 
+        CircleDto circleDto2 = (CircleDto) shapeService.update(updateShapeCommand);
 
+        assertEquals(circleDto.getRadius(), circleDto2.getRadius());
     }
 
+    @Test
+    public void testUpdateShapeSquare() {
+        Square square = new Square(2.0);
+        square.setId(1);
+        SquareDto squareDto = new SquareDto(4.0);
+        Map<String, Double> map = new HashMap<>();
+        map.put("side", 4.0);
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map);
 
+        when(updateService.update(updateShapeCommand)).thenReturn(square);
+        when(shapeBuildService.buildShapeDto(square)).thenReturn(squareDto);
+
+        SquareDto squareDto2 = (SquareDto) shapeService.update(updateShapeCommand);
+
+        assertEquals(squareDto.getSide(), squareDto2.getSide());
+    }
+
+    @Test
+    public void testUpdateShapeRectangle() {
+        Rectangle rectangle = new Rectangle(2.0, 5.0);
+        rectangle.setId(1);
+        RectangleDto rectangleDto = new RectangleDto(6.0, 9.0);
+        Map<String, Double> map = new HashMap<>();
+        map.put("width", 6.0);
+        map.put("height", 9.0);
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map);
+
+        when(updateService.update(updateShapeCommand)).thenReturn(rectangle);
+        when(shapeBuildService.buildShapeDto(rectangle)).thenReturn(rectangleDto);
+
+        RectangleDto rectangleDto2 = (RectangleDto) shapeService.update(updateShapeCommand);
+
+        assertEquals(rectangleDto.getHeight(), rectangleDto2.getHeight());
+        assertEquals(rectangleDto.getWidth(), rectangleDto2.getWidth());
+    }
 }

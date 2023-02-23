@@ -27,18 +27,3 @@ CREATE TABLE APP_USER
 
     PRIMARY KEY (id)
 );
--- CREATE VIEW shape_view
---     (SELECT id, dtype, type, created_by, created_at, last_modified_at, last_modified_by, radius, width, height, side,
---      version, CASE +
---             WHEN type = 'CIRCLE' THEN 3.14 * radius * radius  +
---             WHEN type = 'Rectangle' THEN width * height  +
---             WHEN type = 'SQUARE' THEN side * side  +
---             ELSE NULL  +
---             END AS area, +
---             CASE  +
---             WHEN type = 'CIRCLE' THEN 2 * 3.14 * radius  +
---             WHEN type = 'RECTANGLE' THEN 2 * (width + height)  +
---             WHEN type = 'SQUARE' THEN 4 * side  +
---             ELSE NULL  +
---             END AS perimeter  +
---             FROM APP_SHAPE WHERE id IS NOT NULL)

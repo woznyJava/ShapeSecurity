@@ -5,14 +5,13 @@ import com.example.shapesecurity.model.dto.CircleDto;
 import com.example.shapesecurity.model.dto.ShapeDto;
 import com.example.shapesecurity.model.shape.Circle;
 import com.example.shapesecurity.model.shape.Shape;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component("CIRCLEDTO")
 public class CircleMapper implements ShapeDtoMapper {
-    @Autowired
-    private ShapeMapper shapeMapper;
-
+    private final ShapeMapper shapeMapper;
     @Override
     public ShapeDto mapShapeToShapeDto(Shape shape) {
         Circle circle = (Circle) shape;

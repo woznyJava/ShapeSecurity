@@ -9,7 +9,6 @@ import com.example.shapesecurity.model.shape.Shape;
 import java.util.List;
 
 public interface ShapeService {
-
     ShapeDto save(CreateShapeCommand createShapeCommand);
 
     List<Shape> filter(FilterRequest filterRequest);

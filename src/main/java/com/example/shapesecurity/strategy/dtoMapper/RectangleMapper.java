@@ -5,14 +5,13 @@ import com.example.shapesecurity.model.dto.RectangleDto;
 import com.example.shapesecurity.model.dto.ShapeDto;
 import com.example.shapesecurity.model.shape.Rectangle;
 import com.example.shapesecurity.model.shape.Shape;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component("RECTANGLEDTO")
+@RequiredArgsConstructor
 public class RectangleMapper implements ShapeDtoMapper {
-    @Autowired
-    private ShapeMapper shapeMapper;
-
+    private final ShapeMapper shapeMapper;
     @Override
     public ShapeDto mapShapeToShapeDto(Shape shape) {
         Rectangle rectangle = (Rectangle) shape;

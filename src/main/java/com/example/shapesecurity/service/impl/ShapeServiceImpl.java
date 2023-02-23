@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -25,7 +25,7 @@ public class ShapeServiceImpl implements ShapeService {
     private final UpdateService updateService;
 
     @Override
-    public ShapeDto save(CreateShapeCommand createShapeCommand) {
+    public ShapeDto save(@Valid CreateShapeCommand createShapeCommand) {
         Shape shape = shapeBuildService.buildShape(createShapeCommand);
         shapeRepository.save(shape);
         return shapeBuildService.buildShapeDto(shape);

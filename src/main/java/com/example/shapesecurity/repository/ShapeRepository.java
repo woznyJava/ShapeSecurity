@@ -8,13 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-
 
 public interface ShapeRepository extends JpaRepository<Shape, Integer> {
     @Transactional
@@ -34,6 +31,7 @@ public interface ShapeRepository extends JpaRepository<Shape, Integer> {
             "END AS perimeter " +
             "FROM APP_SHAPE WHERE id IS NOT NULL")
     void createView();
+
     @Query(nativeQuery = true, value = "SELECT * FROM shape_view " +
             "WHERE (:createdBy IS NULL OR created_by = :createdBy) " +
             "AND (:shapeType IS NULL OR type = :shapeType) " +
@@ -69,7 +67,7 @@ public interface ShapeRepository extends JpaRepository<Shape, Integer> {
                            @Param("heightTo") Double heightTo,
                            @Param("radiusFrom") Double radiusFrom,
                            @Param("radiusTo") Double radiusTo);
+
     @Lock(LockModeType.PESSIMISTIC_READ)
     Optional<Shape> findWithLockingById(int id);
-
 }

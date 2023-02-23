@@ -1,20 +1,12 @@
 package com.example.shapesecurity.shapeController;
 
-import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.Permission;
 import com.example.shapesecurity.model.command.CreateShapeCommand;
 import com.example.shapesecurity.model.command.CreateUserCommand;
 import com.example.shapesecurity.model.command.UpdateShapeCommand;
-import com.example.shapesecurity.model.shape.Shape;
 import com.example.shapesecurity.model.user.AuthenticationRequest;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -46,25 +34,6 @@ public class ShapeControllerTests {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-
-    // wyslac token z zapytaniem po token, wyciagnac przez objectMappera tokena, response z deserializacja do mapy po kluczu
-    // beforeEach
-    // potem token w mvc perform
-// mock mvc authorization
-    private Gson gsonFilter = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .create();
-
-    //    private FilterRequest createFilterRequest() {
-//        return new FilterRequest("test@gmail.com", null, 100.0, 150.0, null, null,
-//                LocalDateTime.parse("2022-10-10T00:00:00"), LocalDateTime.parse("2023-10-10T00:00:00"),
-//                1L, null, null, null, null, null, null, 1.0, 10.0);
-//    }
-    private FilterRequest createFilterRequest() {
-        return new FilterRequest("test@gmail.com", null, 100.0, 150.0, null, null,
-                null, null,
-                null, null, null, 3.0, 4.0, 4.0, 5.0, null, null);
-    }
 
     @Test
     @PrepareForTest(SecurityContextHolder.class)
@@ -396,61 +365,17 @@ public class ShapeControllerTests {
                 .andExpect(jsonPath("$.radius").value(7.0))
                 .andExpect(jsonPath("$.area").value(153.86))
                 .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
-//
-//        String json22 = objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(new FilterRequest("test@gmail.com", null, 100.0, 150.0, null, null,
-//                null, null,
-//                null, null, null, 3.0, 4.0, 4.0, 5.0, null, null));
-//        FilterRequest jsonFiltr = objectMapper.readValue(json22, FilterRequest.class);
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-////        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//        JavaTimeModule javaTimeModule = new JavaTimeModule();
-//        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)));
-//        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)));
-//        objectMapper.registerModule(javaTimeModule);
-//
-////        String json997 = "{\"shapeType\":\"RECTANGLE\",\"areaFrom\":10.0,\"areaTo\":20.0,\"perimeterFrom\":12.0,\"perimeterTo\":22.0,\"createdAtFrom\":\"2023-02-15T16:30:00.000\",\"createdAtTo\":\"2023-02-18T16:30:00.000\",\"version\":1,\"sideFrom\":5.0,\"sideTo\":10.0,\"widthFrom\":2.0,\"widthTo\":4.0,\"heightFrom\":3.0,\"heightTo\":6.0,\"radiusFrom\":1.0,\"radiusTo\":3.0}";
-//
-////        FilterRequest filterRequest = objectMapper.readValue(json997, FilterRequest.class);
-//        Gson gsonTest = new GsonBuilder()
-//                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-//                .create();
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
 
-        LocalDateTimeDeserializer localDateTimeDeserializer = new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME);
-        javaTimeModule.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
-        LocalDateTimeSerializer localDateTimeSerializer = new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME);
-        javaTimeModule.addSerializer(LocalDateTime.class, localDateTimeSerializer);
-        objectMapper.registerModule(javaTimeModule);
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-
-
-
-        FilterRequest filterRequest = new FilterRequest("test@gmail.com", null, 100.0, 150.0, null, null, null, null, null, null, null, 3.0, 4.0, 4.0, 5.0, null, null);
-        String jsontest = objectMapper.writeValueAsString(filterRequest);//        String jsonDzialajPlis = gsonTest.toJson(filterRequest);
-//        System.out.println(jsonDzialajPlis + " TO JEST JSONNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-        List<Shape> savedList = objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes")
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes?createdBy=test@gmail.com&areaFrom=19.0&areaTo=30.0&widthFrom=3.0&heightFrom=4.0")
                         .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token)
-                        .content(jsontest))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsByteArray(), List.class);
-//                .andExpect(jsonPath("$.[0].radius").value(7.0))
-//                .andExpect(jsonPath("$.[0].area").value(153.86))
-//                .andExpect(jsonPath("$.[0].createdBy").value("test@gmail.com"))
-//                .andExpect(jsonPath("$.[3].id").value(4));
-        System.out.println(savedList);
+                .andExpect(jsonPath("$.[0].width").value(4.0))
+                .andExpect(jsonPath("$.[0].createdBy").value("test@gmail.com"))
+                .andExpect(jsonPath("$.[0].id").value(3))
+                .andExpect(jsonPath("$.size()").value(1));
+
     }
-    //ObjectMapper objectMapper = new ObjectMapper();
-    //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    //JavaTimeModule javaTimeModule = new JavaTimeModule();
-    //javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)));
-    //javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)));
-    //objectMapper.registerModule(javaTimeModule);
-    //
-    //String json = "{\"createdBy\":\"User1\",\"shapeType\":\"square\",\"areaFrom\":10.0,\"areaTo\":20.0,\"perimeterFrom\":12.0,\"perimeterTo\":22.0,\"createdAtFrom\":\"2023-02-15T16:30:00.000\",\"createdAtTo\":\"2023-02-18T16:30:00.000\",\"version\":1,\"sideFrom\":5.0,\"sideTo\":10.0,\"widthFrom\":2.0,\"widthTo\":4.0,\"heightFrom\":3.0,\"heightTo\":6.0,\"radiusFrom\":1.0,\"radiusTo\":3.0}";
-    //
-    //FilterRequest filterRequest = objectMapper.readValue(json, FilterRequest.class);
 }

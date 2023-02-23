@@ -5,13 +5,14 @@ import com.example.shapesecurity.model.dto.ShapeDto;
 import com.example.shapesecurity.model.dto.SquareDto;
 import com.example.shapesecurity.model.shape.Shape;
 import com.example.shapesecurity.model.shape.Square;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component("SQUAREDTO")
+@RequiredArgsConstructor
 public class SquareMapper implements ShapeDtoMapper {
-    @Autowired
-    private ShapeMapper shapeMapper;
+    private final ShapeMapper shapeMapper;
+
     @Override
     public ShapeDto mapShapeToShapeDto(Shape shape) {
         Square square = (Square) shape;

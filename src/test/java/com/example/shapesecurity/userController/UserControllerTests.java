@@ -65,14 +65,6 @@ public class UserControllerTests {
         assertEquals(payloadData.get("roles"), "[ROLE_USER]");
     }
 
-    // wstrzyknac repo i w grantPermission assercje zrobic
-    // na wejsciu po dodaniu ze ma usera
-
-    //na koncu ze ma creatora
-    //asserty dorobic
-//json node albo json object
-
-
     @Test
     public void testShouldAuthenticateUser() throws Exception {
         CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");

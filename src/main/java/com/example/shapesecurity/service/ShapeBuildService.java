@@ -6,5 +6,6 @@ import com.example.shapesecurity.model.shape.Shape;
 
 public interface ShapeBuildService {
     Shape buildShape(CreateShapeCommand createShapeCommand);
+
     ShapeDto buildShapeDto(Shape shape);
 }

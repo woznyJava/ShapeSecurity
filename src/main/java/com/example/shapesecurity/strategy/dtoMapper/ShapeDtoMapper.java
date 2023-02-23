@@ -5,6 +5,5 @@ import com.example.shapesecurity.model.shape.Shape;
 
 @FunctionalInterface
 public interface ShapeDtoMapper {
-
     ShapeDto mapShapeToShapeDto(Shape shape);
 }

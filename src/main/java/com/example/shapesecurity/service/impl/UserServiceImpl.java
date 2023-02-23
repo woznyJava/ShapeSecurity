@@ -14,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Locale;
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    @Transactional
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
@@ -61,7 +59,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    @Transactional
     @Override
     public void grantPermission(Permission permission) {
         User user = repository.findByEmail(permission.getEmail()).orElseThrow(() -> new EntityNotFoundException(

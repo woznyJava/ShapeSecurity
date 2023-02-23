@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,14 +23,16 @@ public class ShapeController {
 
     @PreAuthorize("hasRole('ROLE_CREATOR')")
     @PostMapping
-    public ResponseEntity<ShapeDto> saveShape(@RequestBody CreateShapeCommand createRequest) {
+    public ResponseEntity<ShapeDto> saveShape( @Valid @RequestBody CreateShapeCommand createRequest) {
         ShapeDto save = shapeService.save(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(save);
     }
+
     @GetMapping
     public ResponseEntity<List<Shape>> filter(FilterRequest filterRequest) {
         return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.filter(filterRequest));
     }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CREATOR')")
     @PutMapping
     public ResponseEntity<ShapeDto> update(@RequestBody UpdateShapeCommand updateShapeCommand) throws InterruptedException {
         return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.update(updateShapeCommand));

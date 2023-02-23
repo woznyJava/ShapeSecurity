@@ -37,7 +37,6 @@ public class ShapeBuilderTests {
 
         assertEquals(circle.getRadius(), command.getParameters().get("radius"));
         assertEquals(circle.getType(), command.getType());
-
     }
 
     @Test

@@ -23,17 +23,11 @@ public class UpdateServiceImpl implements UpdateService {
     @Override
     @Transactional
     public Shape update(UpdateShapeCommand updateShapeCommand) {
-        Shape shape = getShapeOptimisticLock(updateShapeCommand.getId());
+        Shape shape = shapeRepository.findWithLockingById(updateShapeCommand.getId())
+                .orElseThrow(() -> new EntityNotFoundException(String
+                        .format("Shape with id=%s has not been found", updateShapeCommand.getId())));
         String strategyName = shape.getType().toUpperCase(Locale.ROOT) + UPDATE;
-        Shape shape2 = shapeUpdate.get(strategyName)
+        return shapeUpdate.get(strategyName)
                 .updateShape(updateShapeCommand, shape);
-        return shapeRepository.save(shape2);
-    }
-
-    @Override
-    @Transactional
-    public Shape getShapeOptimisticLock(int id) {
-        return shapeRepository.findWithLockingById(id).orElseThrow(() -> new EntityNotFoundException(
-                String.format("Shape with id=%s has not been found", id)));
     }
 }

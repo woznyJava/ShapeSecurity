@@ -36,10 +36,6 @@ public abstract class Shape {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    public Shape(String type) {
-        this.type = type;
-    }
-
     public abstract Double computeArea();
 
     public abstract Double computePerimeter();

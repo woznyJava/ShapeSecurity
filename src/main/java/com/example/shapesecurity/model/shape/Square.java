@@ -15,8 +15,9 @@ import javax.persistence.Entity;
 
 public class Square extends Shape {
     private Double side;
-    public Square(Double squareSide) {
-        this.side = squareSide;
+
+    public Square(Double side) {
+        this.side = side;
     }
 
     public Double computeArea() {

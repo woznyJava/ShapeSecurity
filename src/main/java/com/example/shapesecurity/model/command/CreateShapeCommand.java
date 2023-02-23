@@ -15,5 +15,6 @@ import java.util.Map;
 public class CreateShapeCommand {
     @NotBlank(message = "TYPE_NOT_EMPTY")
     private String type;
+    @NotBlank(message = "PARAMETERS_NOT_EMPTY")
     private Map<String, Double> parameters;
 }
