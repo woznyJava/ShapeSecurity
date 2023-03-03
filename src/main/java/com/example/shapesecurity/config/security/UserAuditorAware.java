@@ -11,13 +11,19 @@ import java.util.Optional;
 @Component
 public class UserAuditorAware implements AuditorAware<String> {
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        @Override
+        public Optional<String> getCurrentAuditor() {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return Optional.empty();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return Optional.empty();
+            }
+
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof User) {
+                return Optional.of(((User) principal).getUsername());
+            } else {
+                return Optional.empty();
+            }
         }
-        return Optional.of(((User) authentication.getPrincipal()).getUsername());
     }
-}

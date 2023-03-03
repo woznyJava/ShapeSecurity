@@ -34,7 +34,7 @@ public class ShapeController {
     }
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CREATOR')")
     @PutMapping
-    public ResponseEntity<ShapeDto> update(@RequestBody UpdateShapeCommand updateShapeCommand) throws InterruptedException {
+    public ResponseEntity<ShapeDto> update(@Valid @RequestBody UpdateShapeCommand updateShapeCommand) throws InterruptedException {
         return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.update(updateShapeCommand));
     }
 }

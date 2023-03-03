@@ -1,5 +1,6 @@
 package com.example.shapesecurity.model.shape;
 
+import com.example.shapesecurity.model.ShapeEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "APP_SHAPE")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(ShapeEntityListener.class)
+
 public abstract class Shape {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +38,11 @@ public abstract class Shape {
     private LocalDateTime lastModifiedAt;
     @LastModifiedBy
     private String lastModifiedBy;
-
+    @OneToOne(mappedBy = "shape", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ShapeView shapeView;
+    @Transient
     public abstract Double computeArea();
 
+    @Transient
     public abstract Double computePerimeter();
 }
