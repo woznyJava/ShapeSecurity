@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 @Getter
@@ -13,8 +13,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateShapeCommand {
-
-    @NotBlank(message = "ID_NOT_EMPTY")
-    private int id;
+    @NotEmpty(message = "PARAMETERS_NOT_EMPTY")
     private Map<String, Double> parameters;
 }

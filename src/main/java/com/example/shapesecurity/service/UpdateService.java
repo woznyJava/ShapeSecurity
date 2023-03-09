@@ -6,5 +6,5 @@ import com.example.shapesecurity.model.shape.Shape;
 
 @FunctionalInterface
 public interface UpdateService {
-    Shape update(UpdateShapeCommand updateShapeCommand);
+    Shape update(UpdateShapeCommand updateShapeCommand, int id );
 }

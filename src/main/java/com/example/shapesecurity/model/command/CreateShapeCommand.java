@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 @Getter
@@ -15,6 +16,6 @@ import java.util.Map;
 public class CreateShapeCommand {
     @NotBlank(message = "TYPE_NOT_EMPTY")
     private String type;
-    @NotBlank(message = "PARAMETERS_NOT_EMPTY")
+    @NotEmpty(message = "PARAMETERS_NOT_EMPTY")
     private Map<String, Double> parameters;
 }

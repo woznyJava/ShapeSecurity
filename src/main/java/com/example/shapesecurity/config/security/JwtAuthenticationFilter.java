@@ -1,6 +1,5 @@
 package com.example.shapesecurity.config.security;
 
-import com.example.shapesecurity.model.user.User;
 import com.example.shapesecurity.service.impl.JwtServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -8,8 +7,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,7 +25,6 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtServiceImpl jwtServiceImpl;
-    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(

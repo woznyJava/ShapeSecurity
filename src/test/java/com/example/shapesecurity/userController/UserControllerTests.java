@@ -41,7 +41,27 @@ public class UserControllerTests {
 
     @Autowired
     private UserRepository userRepository;
+    @Test
+    public void testShouldThrowException() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand(null, null, null, "Test");
 
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+//                .andExpect(content().contentType(APPLICATION_JSON)
+
+//        String token = savedToken.get("token");
+//        String payload = token.split("\\.")[1];
+//        Base64.Decoder base64 = Base64.getDecoder();
+//        Map<String, String> payloadData = objectMapper.readValue(base64.decode(payload), Map.class);
+//        assertEquals(payloadData.get("sub"), "test@gmail.com");
+//        assertEquals(payloadData.get("roles"), "[ROLE_USER]");
+    }
     @Test
     public void testShouldRegisterUser() throws Exception {
         CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");

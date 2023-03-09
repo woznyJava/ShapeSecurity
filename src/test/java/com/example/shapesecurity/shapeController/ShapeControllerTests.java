@@ -207,7 +207,7 @@ public class ShapeControllerTests {
 
         Map<String, Double> map2 = new HashMap<>();
         map2.put("radius", 8.0);
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map2);
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(map2);
 
         Gson gson = new Gson();
         String json = gson.toJson(createUserCommand);
@@ -251,7 +251,7 @@ public class ShapeControllerTests {
                 .andExpect(jsonPath("$.perimeter").value(12.56))
                 .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8000/api/v1/shapes")
+        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8000/api/v1/shapes/1")
                         .contentType(APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
                         .content(String.valueOf(json5)))

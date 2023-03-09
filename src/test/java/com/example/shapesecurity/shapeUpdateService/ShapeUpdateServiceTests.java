@@ -3,6 +3,7 @@ package com.example.shapesecurity.shapeUpdateService;
 import com.example.shapesecurity.model.command.UpdateShapeCommand;
 import com.example.shapesecurity.model.shape.Circle;
 import com.example.shapesecurity.model.shape.Rectangle;
+import com.example.shapesecurity.model.shape.ShapeView;
 import com.example.shapesecurity.model.shape.Square;
 import com.example.shapesecurity.repository.ShapeRepository;
 import com.example.shapesecurity.service.impl.UpdateServiceImpl;
@@ -44,6 +45,23 @@ public class ShapeUpdateServiceTests {
         shapeUpdateMap.put("SQUAREUPDATE", new SquareUpdate());
     }
 
+    @Test
+    public void testShouldThrowException() {
+        Map<String, Double> parameters = new HashMap<>();
+        parameters.put("radius", 5.0);
+        Circle circle = new Circle(2.0);
+        circle.setType("CIRCLE");
+        ShapeView shapeView = new ShapeView(circle.computeArea(), circle.computePerimeter(), circle);
+        circle.setShapeView(shapeView);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand( parameters);
+
+        when(shapeRepository.findWithLockingById(anyInt())).thenReturn(Optional.of(circle));
+
+        Circle circleUpdated = (Circle) updateService.update(updateShapeCommand, id);
+
+        assertEquals(circleUpdated.getRadius(), parameters.get("radius"));
+    }
 
     @Test
     public void testShouldUpdateShape_Circle() {
@@ -51,11 +69,12 @@ public class ShapeUpdateServiceTests {
         parameters.put("radius", 5.0);
         Circle circle = new Circle(2.0);
         circle.setType("CIRCLE");
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, parameters);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand( parameters);
 
         when(shapeRepository.findWithLockingById(anyInt())).thenReturn(Optional.of(circle));
 
-        Circle circleUpdated = (Circle) updateService.update(updateShapeCommand);
+        Circle circleUpdated = (Circle) updateService.update(updateShapeCommand, id);
 
         assertEquals(circleUpdated.getRadius(), parameters.get("radius"));
     }
@@ -66,11 +85,12 @@ public class ShapeUpdateServiceTests {
         parameters.put("side", 5.0);
         Square square = new Square(2.0);
         square.setType("SQUARE");
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, parameters);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand( parameters);
 
         when(shapeRepository.findWithLockingById(anyInt())).thenReturn(Optional.of(square));
 
-        Square squareUpdated = (Square) updateService.update(updateShapeCommand);
+        Square squareUpdated = (Square) updateService.update(updateShapeCommand, id);
 
         assertEquals(squareUpdated.getSide(), parameters.get("side"));
     }
@@ -82,11 +102,12 @@ public class ShapeUpdateServiceTests {
         parameters.put("height", 5.0);
         Rectangle rectangle = new Rectangle(5.0, 5.0);
         rectangle.setType("RECTANGLE");
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, parameters);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand( parameters);
 
         when(shapeRepository.findWithLockingById(anyInt())).thenReturn(Optional.of(rectangle));
 
-        Rectangle rectangleUpdated = (Rectangle) updateService.update(updateShapeCommand);
+        Rectangle rectangleUpdated = (Rectangle) updateService.update(updateShapeCommand, id);
 
         assertEquals(rectangleUpdated.getHeight(), parameters.get("height"));
         assertEquals(rectangleUpdated.getWidth(), parameters.get("width"));

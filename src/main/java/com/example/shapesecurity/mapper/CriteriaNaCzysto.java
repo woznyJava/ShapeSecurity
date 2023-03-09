@@ -1,89 +1,80 @@
 package com.example.shapesecurity.mapper;
 
-import com.example.shapesecurity.model.FilterRequest;
-import com.example.shapesecurity.model.dto.ShapeDto;
-import com.example.shapesecurity.model.shape.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.util.*;
-import javax.persistence.criteria.Predicate;
-import java.util.function.Function;
 
 @Repository
 @RequiredArgsConstructor
-public class CriteriaNaCzysto {
+public class  CriteriaNaCzysto {
 
     private final EntityManager entityManager;
 
-    public List<Shape> filterShapesPrzebudowanie(FilterRequest filterRequest) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Shape> query = criteriaBuilder.createQuery(Shape.class);
-        Root<Shape> root = query.from(Shape.class);
-        Join<Shape, ShapeView> shapeViewJoin = root.join("shapeView");
-
-        List<Predicate> predicates = new ArrayList<>();
-        addPredicateIfNotNullDoPrzykładuWyżej(
-                filterRequest.getSideTo(),
-                "side",
-                predicates,
-                criteriaBuilder,
-                root::get,
-                shape -> shape instanceof Square ? criteriaBuilder.lessThanOrEqualTo(root.get("side"), filterRequest.getSideTo()) : criteriaBuilder.conjunction());
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getShapeType(), "shapeType", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getSideFrom(), "side", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getSideTo(), "side", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getWidthFrom(), "width", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getWidthTo(), "width", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getWidthTo(), "width", predicates, criteriaBuilder, root::get,
-//                shape -> shape instanceof Square);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getHeightTo(), "height", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getRadiusFrom(), "radius", predicates, criteriaBuilder, root::get);
-//        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getRadiusTo(), "radius", predicates, criteriaBuilder, root::get);
-        Optional.ofNullable(filterRequest.getAreaFrom())
-                .ifPresent(areaFrom -> predicates.add(criteriaBuilder.greaterThanOrEqualTo(shapeViewJoin.get("area"), areaFrom)));
-        Optional.ofNullable(filterRequest.getAreaTo())
-                .ifPresent(areaTo -> predicates.add(criteriaBuilder.lessThanOrEqualTo(shapeViewJoin.get("area"), areaTo)));
-
-
-        Optional.ofNullable(filterRequest.getFilters())
-                .ifPresent(filters -> filters.forEach((key, value) -> {
-                    Expression<Object> field = root.get(key);
-                    if (field.getJavaType() == String.class) {
-                        predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
-                    } else {
-                        predicates.add(criteriaBuilder.equal(field, value));
-                    }
-                }));
-
-        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-
-        TypedQuery<Shape> typedQuery = entityManager.createQuery(query);
-        return typedQuery.getResultList();
-    }
-
-    private void addPredicateIfNotNullDoPrzykładuWyżej(Object value, String fieldName, List<Predicate> predicates,
-                                                       CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression,
-                                                       Function<Shape, Predicate> predicateSupplier) {
-        Optional.ofNullable(value)
-                .ifPresent(v -> {
-                    Expression<Object> field = expression.apply(fieldName);
-                    Shape square = new Square();
-                    Predicate predicate = square.getClass().equals(field.getJavaType()) ? predicateSupplier.apply(square) : criteriaBuilder.conjunction();
-                    predicates.add(criteriaBuilder.and(
-                            predicate,
-                            criteriaBuilder.equal(field, v)
-                    ));
-                });
-    }
-
+//    public List<Shape> filterShapesPrzebudowanie(FilterRequest filterRequest) {
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Shape> query = criteriaBuilder.createQuery(Shape.class);
+//        Root<Shape> root = query.from(Shape.class);
+//        Join<Shape, ShapeView> shapeViewJoin = root.join("shapeView");
+//
+//        List<Predicate> predicates = new ArrayList<>();
+//        addPredicateIfNotNullDoPrzykładuWyżej(
+//                filterRequest.getSideTo(),
+//                "side",
+//                predicates,
+//                criteriaBuilder,
+//                root::get,
+//                shape -> shape instanceof Square ? criteriaBuilder.lessThanOrEqualTo(root.get("side"), filterRequest.getSideTo()) : criteriaBuilder.conjunction());
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getShapeType(), "shapeType", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getSideFrom(), "side", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getSideTo(), "side", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getWidthFrom(), "width", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getWidthTo(), "width", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getWidthTo(), "width", predicates, criteriaBuilder, root::get,
+////                shape -> shape instanceof Square);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getHeightTo(), "height", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getRadiusFrom(), "radius", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNullDoPrzykładuWyżej(filterRequest.getRadiusTo(), "radius", predicates, criteriaBuilder, root::get);
+////        Optional.ofNullable(filterRequest.getAreaFrom())
+////                .ifPresent(areaFrom -> predicates.add(criteriaBuilder.greaterThanOrEqualTo(shapeViewJoin.get("area"), areaFrom)));
+////        Optional.ofNullable(filterRequest.getAreaTo())
+////                .ifPresent(areaTo -> predicates.add(criteriaBuilder.lessThanOrEqualTo(shapeViewJoin.get("area"), areaTo)));
+////
+////
+////        Optional.ofNullable(filterRequest.getFilters())
+////                .ifPresent(filters -> filters.forEach((key, value) -> {
+////                    Expression<Object> field = root.get(key);
+////                    if (field.getJavaType() == String.class) {
+////                        predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
+////                    } else {
+////                        predicates.add(criteriaBuilder.equal(field, value));
+////                    }
+////                }));
+////
+////        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+////
+////        TypedQuery<Shape> typedQuery = entityManager.createQuery(query);
+////        return typedQuery.getResultList();
+////    }
+////
+////    private void addPredicateIfNotNullDoPrzykładuWyżej(Object value, String fieldName, List<Predicate> predicates,
+////                                                       CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression,
+////                                                       Function<Shape, Predicate> predicateSupplier) {
+////        Optional.ofNullable(value)
+////                .ifPresent(v -> {
+////                    Expression<Object> field = expression.apply(fieldName);
+////                    Shape square = new Square();
+////                    Predicate predicate = square.getClass().equals(field.getJavaType()) ? predicateSupplier.apply(square) : criteriaBuilder.conjunction();
+////                    predicates.add(criteriaBuilder.and(
+////                            predicate,
+////                            criteriaBuilder.equal(field, v)
+////                    ));
+////                });
+////    }
+//    }
     //    private void addPredicateIfNotNullTest(Object fromValue, Object toValue, String fieldName, List<Predicate> predicates,
 //                                          CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression) {
 //        if (fromValue != null && toValue != null) {
@@ -220,63 +211,79 @@ public class CriteriaNaCzysto {
 //                    Predicate predicate = isFrom ? criteriaBuilder.greaterThanOrEqualTo(field, v)
 //                            : criteriaBuilder.lessThanOrEqualTo(field, v);
 //                    predicates.add(predicate);
-//                });
+////                });
+////    }
+//// to działa ale ogarnąć trzeba żeby filtrowało od do
+//    public List<Shape> filterShapes3(FilterRequest filterRequest) {
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Shape> query = criteriaBuilder.createQuery(Shape.class);
+//        Root<Shape> root = query.from(Shape.class);
+//
+//
+//        List<Predicate> predicates = new ArrayList<>();
+//
+//
+////        if (filterRequest.getSideFrom() == null) {
+////            Predicate predicate = criteriaBuilder.equal(root.get("side"), Square.class.getSimpleName());
+////            predicates.add(predicate);
+////        }
+//
+////        addPredicateIfNotNull(criteriaBuilder.greaterThanOrEqualTo(root.get("side"), Square.class.getSimpleName()));
+//        addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);
+//        addPredicateIfNotNull(filterRequest.getShapeType(), "shapeType", predicates, criteriaBuilder, root::get);
+//        addPredicateIfNotNull(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
+//        addPredicateIfNotNull(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
+//        addPredicateIfNotNull(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getSideFrom(), "side", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getSideTo(), "side", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getWidthFrom(), "width", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getWidthTo(), "width", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getHeightFrom(), "height", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getHeightTo(), "height", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getRadiusFrom(), "radius", predicates, criteriaBuilder, root::get);
+////        addPredicateIfNotNull(filterRequest.getRadiusTo(), "radius", predicates, criteriaBuilder, root::get);
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Square.class).get("side"), filterRequest.getSideFrom())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Circle.class).get("radius"), filterRequest.getRadiusFrom())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Rectangle.class).get("width"), filterRequest.getWidthFrom())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Rectangle.class).get("height"), filterRequest.getHeightFrom())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Square.class).get("side"), filterRequest.getSideTo())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Circle.class).get("radius"), filterRequest.getRadiusTo())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Rectangle.class).get("width"), filterRequest.getWidthTo())));
+//        Optional.of(predicates.add((Predicate) criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.treat(root, Rectangle.class).get("height"), filterRequest.getHeightTo())));
+//
+//// Optional.ofNullable( predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Square.class).get("side"), filterRequest.getSideFrom())));
+////            Optional.ofNullable(predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Circle.class).get("radius"), filterRequest.getRadiusFrom())));
+////            Optional.ofNullable( predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Rectangle.class).get("width"), filterRequest.getWidthFrom())));
+////            Optional.ofNullable(predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Rectangle.class).get("height"), filterRequest.getHeightFrom())));
+////            Optional.ofNullable( predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Square.class).get("side"), filterRequest.getSideTo())));
+////            Optional.ofNullable(predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Circle.class).get("radius"), filterRequest.getRadiusTo())));
+////            Optional.ofNullable(predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Rectangle.class).get("width"), filterRequest.getWidthTo())));
+////            Optional.ofNullable(predicates.add((Predicate) builder.greaterThanOrEqualTo(builder.treat(root, Rectangle.class).get("height"), filterRequest.getHeightTo())));
+//        // join with ShapeType entity and filter by name
+//        addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder,
+//                fieldName -> root.join("shapeView", JoinType.INNER).get("area"));
+//
+//
+//        Optional.ofNullable(filterRequest.getFilters())
+//                .ifPresent(filters -> filters.forEach((key, value) -> {
+//                    Expression<Object> field = root.get(key);
+//                    if (field.getJavaType() == String.class) {
+//                        predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
+//                    } else {
+//                        predicates.add(criteriaBuilder.equal(field, value));
+//                    }
+//                }));
+//
+//        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+//
+//        TypedQuery<Shape> typedQuery = entityManager.createQuery(query);
+//        return typedQuery.getResultList();
 //    }
-// to działa ale ogarnąć trzeba żeby filtrowało od do
-    public List<Shape> filterShapes3(FilterRequest filterRequest) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Shape> query = criteriaBuilder.createQuery(Shape.class);
-        Root<Shape> root = query.from(Shape.class);
-
-
-        List<Predicate> predicates = new ArrayList<>();
-
-
-        if (filterRequest.getSideFrom() == null) {
-            Predicate predicate = criteriaBuilder.equal(root.get("side"), Square.class.getSimpleName());
-            predicates.add(predicate);
-        }
-
-//        addPredicateIfNotNull(criteriaBuilder.greaterThanOrEqualTo(root.get("side"), Square.class.getSimpleName()));
-        addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getShapeType(), "shapeType", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getSideFrom(), "side", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getSideTo(), "side", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getWidthFrom(), "width", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getWidthTo(), "width", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getHeightFrom(), "height", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getHeightTo(), "height", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getRadiusFrom(), "radius", predicates, criteriaBuilder, root::get);
-        addPredicateIfNotNull(filterRequest.getRadiusTo(), "radius", predicates, criteriaBuilder, root::get);
-
-
-        // join with ShapeType entity and filter by name
-        addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder,
-                fieldName -> root.join("shapeView", JoinType.INNER).get("area"));
-
-        Optional.ofNullable(filterRequest.getFilters())
-                .ifPresent(filters -> filters.forEach((key, value) -> {
-                    Expression<Object> field = root.get(key);
-                    if (field.getJavaType() == String.class) {
-                        predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
-                    } else {
-                        predicates.add(criteriaBuilder.equal(field, value));
-                    }
-                }));
-
-        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-
-        TypedQuery<Shape> typedQuery = entityManager.createQuery(query);
-        return typedQuery.getResultList();
-    }
-    private void addPredicateIfNotNull(Object value, String fieldName, List<Predicate> predicates,
-                                       CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression) {
-        Optional.ofNullable(value)
-                .ifPresent(v -> predicates.add(criteriaBuilder.equal(expression.apply(fieldName), v)));
-    }
+//    private void addPredicateIfNotNull(Object value, String fieldName, List<Predicate> predicates,
+//                                       CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression) {
+//        Optional.ofNullable(value)
+//                .ifPresent(v -> predicates.add(criteriaBuilder.equal(expression.apply(fieldName), v)));
+//    }
 
 //    private void addPredicateIfNotNullTest(Object value, String fieldName, List<Predicate> predicates,
 //                                       CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression,
@@ -296,13 +303,46 @@ public class CriteriaNaCzysto {
 //                            break;
 //                    }
 //                });
+////    }
+//
+//    public Specification<Shape> filterShape2(FilterRequest filterRequest) {
+//        return (root, query, criteriaBuilder) -> {
+//            List<Predicate> predicates = new ArrayList<>();
+//
+//            addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getAreaTo(), "area", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getPerimeterFrom(), "perimeter", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getPerimeterTo(), "perimeter", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
+////            addPredicateIfNotNull(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
+//
+//            // join with ShapeType entity and filter by name
+//            addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder,
+//                    fieldName -> root.join("SHAPE", JoinType.INNER).get("area"));
+//
+//            Optional.ofNullable(filterRequest.getFilters())
+//                    .ifPresent(filters -> filters.forEach((key, value) -> {
+//                        Expression<Object> field = root.get(key);
+//                        if (field.getJavaType() == String.class) {
+//                            predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
+//                        } else {
+//                            predicates.add(criteriaBuilder.equal(field, value));
+//                        }
+//                    }));
+//
+//            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+//        };
 //    }
-
-    public Specification<Shape> filterShape2(FilterRequest filterRequest) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);
+//
+//
+//    public Specification<Shape> filterShape(FilterRequest filterRequest) {
+//        return (root, query, criteriaBuilder) -> {
+//            List<Predicate> predicates = new ArrayList<>();
+//
+//            addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);
+//            addPredicateIfNotNull(filterRequest.getShapeType(), "type", predicates, criteriaBuilder, root::get);
 //            addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder, root::get);
 //            addPredicateIfNotNull(filterRequest.getAreaTo(), "area", predicates, criteriaBuilder, root::get);
 //            addPredicateIfNotNull(filterRequest.getPerimeterFrom(), "perimeter", predicates, criteriaBuilder, root::get);
@@ -310,61 +350,28 @@ public class CriteriaNaCzysto {
 //            addPredicateIfNotNull(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
 //            addPredicateIfNotNull(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
 //            addPredicateIfNotNull(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
-
-            // join with ShapeType entity and filter by name
-            addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder,
-                    fieldName -> root.join("SHAPE", JoinType.INNER).get("area"));
-
-            Optional.ofNullable(filterRequest.getFilters())
-                    .ifPresent(filters -> filters.forEach((key, value) -> {
-                        Expression<Object> field = root.get(key);
-                        if (field.getJavaType() == String.class) {
-                            predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
-                        } else {
-                            predicates.add(criteriaBuilder.equal(field, value));
-                        }
-                    }));
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
-
-    public Specification<Shape> filterShape(FilterRequest filterRequest) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getShapeType(), "type", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getAreaFrom(), "area", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getAreaTo(), "area", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getPerimeterFrom(), "perimeter", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getPerimeterTo(), "perimeter", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getCreatedAtFrom(), "createdAt", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getCreatedAtTo(), "createdAt", predicates, criteriaBuilder, root::get);
-            addPredicateIfNotNull(filterRequest.getVersion(), "version", predicates, criteriaBuilder, root::get);
-
-            Optional.ofNullable(filterRequest.getFilters())
-                    .ifPresent(filters -> filters.forEach((key, value) -> {
-                        Expression<Object> field = root.get(key);
-                        if (field.getJavaType() == String.class) {
-                            predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
-                        } else {
-                            predicates.add(criteriaBuilder.equal(field, value));
-                        }
-                    }));
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
-    private void addPredicateIfNotNull2(Object value, String fieldName, List<Predicate> predicates,
-                                        CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression) {
-        Optional.ofNullable(value)
-                .ifPresent(v -> predicates.add(criteriaBuilder.equal(expression.apply(fieldName), v)));
-    }
-//    public Specification<Shape> createSpecification33(FilterRequest filterRequest) {
-//        return (root, query, criteriaBuilder) -> {
+//
+//            Optional.ofNullable(filterRequest.getFilters())
+//                    .ifPresent(filters -> filters.forEach((key, value) -> {
+//                        Expression<Object> field = root.get(key);
+//                        if (field.getJavaType() == String.class) {
+//                            predicates.add(criteriaBuilder.like(field.as(String.class), "%" + value + "%"));
+//                        } else {
+//                            predicates.add(criteriaBuilder.equal(field, value));
+//                        }
+//                    }));
+//
+//            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+//        };
+//    }
+//
+//    private void addPredicateIfNotNull2(Object value, String fieldName, List<Predicate> predicates,
+//                                        CriteriaBuilder criteriaBuilder, Function<String, Expression<Object>> expression) {
+//        Optional.ofNullable(value)
+//                .ifPresent(v -> predicates.add(criteriaBuilder.equal(expression.apply(fieldName), v)));
+//    }
+////    public Specification<Shape> createSpecification33(FilterRequest filterRequest) {
+////        return (root, query, criteriaBuilder) -> {
 //            List<Predicate> predicates = new ArrayList<>();
 //
 //            addPredicateIfNotNull(filterRequest.getCreatedBy(), "createdBy", predicates, criteriaBuilder, root::get);

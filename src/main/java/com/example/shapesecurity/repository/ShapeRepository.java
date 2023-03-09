@@ -3,17 +3,13 @@ package com.example.shapesecurity.repository;
 import com.example.shapesecurity.model.shape.Shape;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 public interface ShapeRepository extends JpaRepository<Shape, Integer> {
+
+//    List<Shape> findByFilterRequest()
 //    @Transactional
 //    @Modifying
 //    @Query(nativeQuery = true, value = "CREATE VIEW shape_view AS" +

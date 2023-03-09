@@ -6,9 +6,7 @@ import com.example.shapesecurity.model.command.CreateShapeCommand;
 import com.example.shapesecurity.model.dto.CircleDto;
 import com.example.shapesecurity.model.dto.RectangleDto;
 import com.example.shapesecurity.model.dto.SquareDto;
-import com.example.shapesecurity.model.shape.Circle;
-import com.example.shapesecurity.model.shape.Rectangle;
-import com.example.shapesecurity.model.shape.Square;
+import com.example.shapesecurity.model.shape.*;
 import com.example.shapesecurity.service.impl.ShapeBuildServiceImpl;
 import com.example.shapesecurity.strategy.builder.CircleBuilder;
 import com.example.shapesecurity.strategy.builder.RectangleBuilder;
@@ -55,9 +53,14 @@ public class ShapeBuilderServiceTests {
         parameters.put("radius", 5.0);
 
         CreateShapeCommand createShapeCommand = new CreateShapeCommand("CIRCLE", parameters);
-        Circle circle = (Circle) shapeBuildService.buildShape(createShapeCommand);
+        Map<String, Object> map = shapeBuildService.buildShape(createShapeCommand);
+        Circle circle = (Circle) map.get("Shape");
+        ShapeView shapeView = (ShapeView) map.get("ShapeView");
 
         assertEquals(circle.getRadius(), parameters.get("radius"));
+        assertEquals(shapeView.getRadius(), circle.getRadius());
+        assertEquals(shapeView.getArea(), circle.computeArea());
+        assertEquals(shapeView.getPerimeter(), circle.computePerimeter());
     }
 
     @Test
@@ -66,9 +69,16 @@ public class ShapeBuilderServiceTests {
         parameters.put("side", 4.0);
 
         CreateShapeCommand createShapeCommand = new CreateShapeCommand("SQUARE", parameters);
-        Square square = (Square) shapeBuildService.buildShape(createShapeCommand);
+        Map<String, Object> map = shapeBuildService.buildShape(createShapeCommand);
 
+        Square square = (Square) map.get("Shape");
+        ShapeView shapeView =  (ShapeView) map.get("ShapeView");
+
+        assertEquals(shapeView.getSide(), square.getSide());
+        assertEquals(shapeView.getArea(), square.computeArea());
+        assertEquals(shapeView.getPerimeter(), square.computePerimeter());
         assertEquals(square.getSide(), parameters.get("side"));
+
     }
 
     @Test
@@ -78,8 +88,15 @@ public class ShapeBuilderServiceTests {
         parameters.put("height", 6.0);
 
         CreateShapeCommand createShapeCommand = new CreateShapeCommand("RECTANGLE", parameters);
-        Rectangle rectangle = (Rectangle) shapeBuildService.buildShape(createShapeCommand);
+        Map<String, Object> map = shapeBuildService.buildShape(createShapeCommand);
 
+        Rectangle rectangle = (Rectangle) map.get("Shape");
+        ShapeView shapeView =  (ShapeView) map.get("ShapeView");
+
+        assertEquals(shapeView.getHeight(), rectangle.getHeight());
+        assertEquals(shapeView.getWidth(), rectangle.getWidth());
+        assertEquals(shapeView.getArea(), rectangle.computeArea());
+        assertEquals(shapeView.getPerimeter(), rectangle.computePerimeter());
         assertEquals(rectangle.getWidth(), parameters.get("width"));
         assertEquals(rectangle.getHeight(), parameters.get("height"));
     }

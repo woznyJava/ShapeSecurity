@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +29,5 @@ public class FilterRequest {
     private Double heightTo;
     private Double radiusFrom;
     private Double radiusTo;
-    private Map<String, Object> filters;
 
 }

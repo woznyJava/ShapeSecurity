@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtServiceImpl;
     private final AuthenticationManager authenticationManager;
 
+    @Valid
     @Override
     public AuthenticationResponse register(CreateUserCommand request) {
         var user = User.builder()
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 .token(jwtToken)
                 .build();
     }
-
+//rest controller i obsluga przez niego
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(

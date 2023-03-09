@@ -18,10 +18,11 @@ public class ShapeBuildServiceImpl implements ShapeBuildService {
     private final Map<String, ShapeBuilder> shapeBuilders;
     private final Map<String, ShapeDtoMapper> shapeMapperMap;
     @Override
-    public Shape buildShape(CreateShapeCommand createShapeCommand) {
-        Shape shape = shapeBuilders.get(createShapeCommand.getType().toUpperCase())
+    public Map<String, Object> buildShape(CreateShapeCommand createShapeCommand) {
+        Map<String, Object> map = shapeBuilders.get(createShapeCommand.getType().toUpperCase())
                 .getNewShape(createShapeCommand);
-        return shape;
+
+        return map;
     }
 
     @Override

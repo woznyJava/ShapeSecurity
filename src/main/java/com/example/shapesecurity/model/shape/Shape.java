@@ -1,6 +1,7 @@
 package com.example.shapesecurity.model.shape;
 
 import com.example.shapesecurity.model.ShapeEntityListener;
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "APP_SHAPE")
 @Entity
-//@EntityListeners(AuditingEntityListener.class)
+@QueryEntity
 @EntityListeners(ShapeEntityListener.class)
 
 public abstract class Shape {

@@ -1,7 +1,9 @@
 package com.example.shapesecurity.service.impl;
 
+import com.example.shapesecurity.mapper.CriteriaFilter;
 import com.example.shapesecurity.mapper.CriteriaNaCzysto;
 import com.example.shapesecurity.mapper.CriteriaShape;
+import com.example.shapesecurity.mapper.Qquery;
 import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.command.CreateShapeCommand;
 import com.example.shapesecurity.model.command.UpdateShapeCommand;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,21 +31,22 @@ public class ShapeServiceImpl implements ShapeService {
     private final CriteriaShape criteriaShape;
     private final CriteriaNaCzysto criteriaNaCzysto;
     private final ShapeViewServiceImpl shapeViewService;
-
+    private final CriteriaFilter criteriaFilter;
+    private final Qquery qquery;
 
     @Override
+
     public ShapeDto save(@Valid CreateShapeCommand createShapeCommand) {
-        Shape shape = shapeBuildService.buildShape(createShapeCommand);
-        ShapeView shapeView = shapeViewService.create(shape);
-//        shape.setShapeView(shapeView);
-        shapeRepository.save(shape);
-        shapeViewService.save(shapeView);
-        return shapeBuildService.buildShapeDto(shape);
+        Map<String, Object> map = shapeBuildService.buildShape(createShapeCommand);
+        shapeRepository.save((Shape) map.get("Shape"));
+        shapeViewService.save((ShapeView) map.get("ShapeView"));
+        return shapeBuildService.buildShapeDto((Shape) map.get("Shape"));
     }
 
     @Override
-    public List<Shape> filter(FilterRequest filterRequest) {
-        return criteriaNaCzysto.filterShapes3(filterRequest);
+    public List<ShapeDto> filter(FilterRequest filterRequest) {
+        return qquery.testNowy(filterRequest);
+//        return criteriaNaCzysto.filterShapes3(filterRequest);
 //        return shapeRepository.findShapes(filterRequest.getCreatedBy(), filterRequest.getShapeType(), filterRequest.getAreaFrom()
 //                , filterRequest.getAreaTo(), filterRequest.getPerimeterFrom(), filterRequest.getPerimeterTo(), filterRequest.getCreatedAtFrom(),
 //                filterRequest.getCreatedAtTo(), filterRequest.getVersion(), filterRequest.getSideFrom(), filterRequest.getSideTo(),
@@ -52,13 +56,8 @@ public class ShapeServiceImpl implements ShapeService {
 
     @Transactional
     @Override
-    public ShapeDto update(UpdateShapeCommand updateShapeCommand) {
-        Shape shape = updateService.update(updateShapeCommand);
+    public ShapeDto update(UpdateShapeCommand updateShapeCommand, int id) {
+        Shape shape = updateService.update(updateShapeCommand, id );
         return shapeBuildService.buildShapeDto(shape);
     }
-
-//    @PostConstruct
-//    private void createView() {
-//        shapeRepository.createView();
-//    }
 }

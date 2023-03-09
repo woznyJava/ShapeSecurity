@@ -49,7 +49,7 @@ public class ShapeServiceTests {
         map.put("radius", 2.0);
         CreateShapeCommand createUpdateShapeCommand = new CreateShapeCommand("CIRCLE", map);
         Circle circle = new Circle(2.0);
-        when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(circle);
+//        when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(circle);
 
         shapeService.save(createUpdateShapeCommand);
 
@@ -67,7 +67,7 @@ public class ShapeServiceTests {
         map.put("side", 3.0);
         CreateShapeCommand createUpdateShapeCommand = new CreateShapeCommand("SQUARE", map);
         Square square = new Square(3.0);
-        when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(square);
+//        when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(square);
 
         shapeService.save(createUpdateShapeCommand);
 
@@ -87,7 +87,7 @@ public class ShapeServiceTests {
 
         CreateShapeCommand createUpdateShapeCommand = new CreateShapeCommand("RECTANGLE", map);
         Rectangle rectangle = new Rectangle(4.0, 5.0);
-        when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(rectangle);
+//        when(shapeBuildService.buildShape(createUpdateShapeCommand)).thenReturn(rectangle);
         shapeService.save(createUpdateShapeCommand);
 
         verify(shapeRepository).save(shapeArgumentCaptor.capture());
@@ -105,12 +105,13 @@ public class ShapeServiceTests {
         CircleDto circleDto = new CircleDto(4.0);
         Map<String, Double> map = new HashMap<>();
         map.put("radius", 4.0);
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(map);
 
-        when(updateService.update(updateShapeCommand)).thenReturn(circle);
+        when(updateService.update(updateShapeCommand, id)).thenReturn(circle);
         when(shapeBuildService.buildShapeDto(circle)).thenReturn(circleDto);
 
-        CircleDto circleDto2 = (CircleDto) shapeService.update(updateShapeCommand);
+        CircleDto circleDto2 = (CircleDto) shapeService.update(updateShapeCommand, id);
 
         assertEquals(circleDto.getRadius(), circleDto2.getRadius());
     }
@@ -122,12 +123,13 @@ public class ShapeServiceTests {
         SquareDto squareDto = new SquareDto(4.0);
         Map<String, Double> map = new HashMap<>();
         map.put("side", 4.0);
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(map);
 
-        when(updateService.update(updateShapeCommand)).thenReturn(square);
+        when(updateService.update(updateShapeCommand, 1)).thenReturn(square);
         when(shapeBuildService.buildShapeDto(square)).thenReturn(squareDto);
 
-        SquareDto squareDto2 = (SquareDto) shapeService.update(updateShapeCommand);
+        SquareDto squareDto2 = (SquareDto) shapeService.update(updateShapeCommand, 1);
 
         assertEquals(squareDto.getSide(), squareDto2.getSide());
     }
@@ -140,12 +142,13 @@ public class ShapeServiceTests {
         Map<String, Double> map = new HashMap<>();
         map.put("width", 6.0);
         map.put("height", 9.0);
-        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(1, map);
+        int id = 1;
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand(map);
 
-        when(updateService.update(updateShapeCommand)).thenReturn(rectangle);
+        when(updateService.update(updateShapeCommand, id)).thenReturn(rectangle);
         when(shapeBuildService.buildShapeDto(rectangle)).thenReturn(rectangleDto);
 
-        RectangleDto rectangleDto2 = (RectangleDto) shapeService.update(updateShapeCommand);
+        RectangleDto rectangleDto2 = (RectangleDto) shapeService.update(updateShapeCommand, id);
 
         assertEquals(rectangleDto.getHeight(), rectangleDto2.getHeight());
         assertEquals(rectangleDto.getWidth(), rectangleDto2.getWidth());

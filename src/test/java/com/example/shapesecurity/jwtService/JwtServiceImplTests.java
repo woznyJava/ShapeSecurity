@@ -18,7 +18,10 @@ public class JwtServiceImplTests {
 
     @Test
     public void shouldExtractName() {
-        String name = jwtServiceImpl.extractUserName("eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoidGVzdG93eUBnbWFpbC5jb20iLCJpYXQiOjE2NzcxMDE1MzMsInJvbGVzIjoiW1JPTEVfVVNFUl0iLCJleHAiOjE2NzcxMDI5NzN9.Gjt02QZk2UCvh1O_8Wmo1aubPqZEqtu6Le1HZ5ABFAE");
+        User user = new User(1, "test", "test", "testowy@gmail.com", "password", Role.ROLE_USER);
+        String token = jwtServiceImpl.generateToken(user);
+
+        String name = jwtServiceImpl.extractUserName(token);
         assertEquals(name, "testowy@gmail.com");
     }
 

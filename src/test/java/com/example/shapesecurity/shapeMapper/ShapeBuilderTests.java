@@ -28,14 +28,16 @@ public class ShapeBuilderTests {
     private SquareBuilder squareBuilder;
 
     @Test
-    public void shouldReturnCircle() {
+    public void shouldReturnCircleAndShapeView() {
         Map<String, Double> parameters = new HashMap<>();
-        parameters.put("radius", 5.0);
+        parameters.put("radius", 7.0);
         CreateShapeCommand command = new CreateShapeCommand("CIRCLE", parameters);
 
-        Circle circle = (Circle) circleBuilder.getNewShape(command);
-
+        Map<String, Object> map = circleBuilder.getNewShape(command);
+        Circle circle = (Circle) map.get("Shape");
         assertEquals(circle.getRadius(), command.getParameters().get("radius"));
+        assertEquals(circle.computeArea(), 153.86);
+        assertEquals(circle.computePerimeter(), 43.96);
         assertEquals(circle.getType(), command.getType());
     }
 

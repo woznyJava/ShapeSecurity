@@ -1,9 +1,10 @@
 package com.example.shapesecurity.strategy.builder;
 
 import com.example.shapesecurity.model.command.CreateShapeCommand;
-import com.example.shapesecurity.model.shape.Shape;
+
+import java.util.Map;
 
 @FunctionalInterface
 public interface ShapeBuilder {
-    Shape getNewShape(CreateShapeCommand createShapeCommand);
+    Map<String, Object> getNewShape(CreateShapeCommand createShapeCommand);
 }
