@@ -1,24 +1,19 @@
 package com.example.shapesecurity.service.impl;
 
-import com.example.shapesecurity.mapper.CriteriaFilter;
-import com.example.shapesecurity.mapper.CriteriaNaCzysto;
-import com.example.shapesecurity.mapper.CriteriaShape;
-import com.example.shapesecurity.mapper.Qquery;
+import com.example.shapesecurity.mapper.CriteriaFilterShape;
 import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.command.CreateShapeCommand;
-import com.example.shapesecurity.model.command.UpdateShapeCommand;
 import com.example.shapesecurity.model.dto.ShapeDto;
 import com.example.shapesecurity.model.shape.Shape;
 import com.example.shapesecurity.model.shape.ShapeView;
 import com.example.shapesecurity.repository.ShapeRepository;
 import com.example.shapesecurity.service.ShapeBuildService;
 import com.example.shapesecurity.service.ShapeService;
-import com.example.shapesecurity.service.UpdateService;
+import com.example.shapesecurity.service.ShapeViewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -27,37 +22,32 @@ import java.util.Map;
 public class ShapeServiceImpl implements ShapeService {
     private final ShapeRepository shapeRepository;
     private final ShapeBuildService shapeBuildService;
-    private final UpdateService updateService;
-    private final CriteriaShape criteriaShape;
-    private final CriteriaNaCzysto criteriaNaCzysto;
-    private final ShapeViewServiceImpl shapeViewService;
-    private final CriteriaFilter criteriaFilter;
-    private final Qquery qquery;
+    private final ShapeViewService shapeViewService;
+    private final CriteriaFilterShape criteriaFilterShape;
+    private final ShapeSpecificationFactory shapeSpecificationFactory;
 
     @Override
-
-    public ShapeDto save(@Valid CreateShapeCommand createShapeCommand) {
+    public ShapeDto save(CreateShapeCommand createShapeCommand) {
         Map<String, Object> map = shapeBuildService.buildShape(createShapeCommand);
-        shapeRepository.save((Shape) map.get("Shape"));
+        Shape shape = (Shape) map.get("Shape");
+        shapeRepository.save(shape);
         shapeViewService.save((ShapeView) map.get("ShapeView"));
-        return shapeBuildService.buildShapeDto((Shape) map.get("Shape"));
+        return shapeBuildService.buildShapeDto(shape);
     }
 
     @Override
     public List<ShapeDto> filter(FilterRequest filterRequest) {
-        return qquery.testNowy(filterRequest);
-//        return criteriaNaCzysto.filterShapes3(filterRequest);
-//        return shapeRepository.findShapes(filterRequest.getCreatedBy(), filterRequest.getShapeType(), filterRequest.getAreaFrom()
-//                , filterRequest.getAreaTo(), filterRequest.getPerimeterFrom(), filterRequest.getPerimeterTo(), filterRequest.getCreatedAtFrom(),
-//                filterRequest.getCreatedAtTo(), filterRequest.getVersion(), filterRequest.getSideFrom(), filterRequest.getSideTo(),
-//                filterRequest.getWidthFrom(), filterRequest.getWidthTo(), filterRequest.getHeightFrom(), filterRequest.getHeightTo()
-//                , filterRequest.getRadiusFrom(), filterRequest.getRadiusTo());
+        return criteriaFilterShape.testNowy(filterRequest);
     }
 
-    @Transactional
     @Override
-    public ShapeDto update(UpdateShapeCommand updateShapeCommand, int id) {
-        Shape shape = updateService.update(updateShapeCommand, id );
-        return shapeBuildService.buildShapeDto(shape);
+    public List<Shape> filtruj(FilterRequest filterRequest) {
+        List<Specification<Shape>> specs = shapeSpecificationFactory.createSpecifications(filterRequest);
+        Specification<Shape> combinedSpecs = Specification.where(specs.get(0));
+
+        for (int i = 1; i < specs.size(); i++) {
+            combinedSpecs = combinedSpecs.and(specs.get(i));
+        }
+        return shapeRepository.findAll(combinedSpecs);
     }
 }

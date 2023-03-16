@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Base64;
@@ -41,9 +40,10 @@ public class UserControllerTests {
 
     @Autowired
     private UserRepository userRepository;
+
     @Test
-    public void testShouldThrowException() throws Exception {
-        CreateUserCommand createUserCommand = new CreateUserCommand(null, null, null, "Test");
+    public void testShouldThrowException_FIRST_NAME_NOT_EMPTY() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand(null, "Test", "test@gmail.com", "Test");
 
         Gson gson = new Gson();
         String json = gson.toJson(createUserCommand);
@@ -52,16 +52,132 @@ public class UserControllerTests {
                         .contentType(APPLICATION_JSON)
                         .content(String.valueOf(json)))
                 .andDo(print())
-                .andExpect(status().is4xxClientError());
-//                .andExpect(content().contentType(APPLICATION_JSON)
-
-//        String token = savedToken.get("token");
-//        String payload = token.split("\\.")[1];
-//        Base64.Decoder base64 = Base64.getDecoder();
-//        Map<String, String> payloadData = objectMapper.readValue(base64.decode(payload), Map.class);
-//        assertEquals(payloadData.get("sub"), "test@gmail.com");
-//        assertEquals(payloadData.get("roles"), "[ROLE_USER]");
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("Validation Failed"))
+                .andExpect(jsonPath("$.details[0]").value("FIRST_NAME_NOT_EMPTY"));
     }
+
+    @Test
+    public void testShouldThrowException_LAST_NAME_NOT_EMPTY() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand("Test", null, "test@gmail.com", "Test");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("Validation Failed"))
+                .andExpect(jsonPath("$.details[0]").value("LAST_NAME_NOT_EMPTY"));
+    }
+
+    @Test
+    public void testShouldThrowException_EMAIL_NOT_EMPTY() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", null, "Test");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("Validation Failed"))
+                .andExpect(jsonPath("$.details[0]").value("EMAIL_NOT_EMPTY"));
+    }
+
+    @Test
+    public void testShouldThrowException_PASSWORD_NOT_EMPTY() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", null);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("Validation Failed"))
+                .andExpect(jsonPath("$.details[0]").value("PASSWORD_NOT_EMPTY"));
+    }
+
+    @Test
+    public void testShouldThrowExceptionPermission_EMAIL_NOT_EMPTY() throws Exception {
+
+        CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+
+        User userBeforeUpdateRole = userRepository.findByEmail(createUserCommand.getEmail()).orElseThrow(() -> new EntityNotFoundException(
+                "User has not been found"));
+
+        assertEquals(userBeforeUpdateRole.getEmail(), "test@gmail.com");
+        assertEquals(userBeforeUpdateRole.getRole(), Role.ROLE_USER);
+
+
+        Permission permission = new Permission(null, "CREATOR");
+
+        Gson gson2 = new Gson();
+        String json2 = gson2.toJson(permission);
+        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8000/api/v1/users")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json2)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("Validation Failed"))
+                .andExpect(jsonPath("$.details[0]").value("EMAIL_NOT_EMPTY"));
+
+    }
+
+    @Test
+    public void testShouldThrowExceptionPermission_NAME_ROLE_NOT_EMPTY() throws Exception {
+
+        CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+
+        User userBeforeUpdateRole = userRepository.findByEmail(createUserCommand.getEmail()).orElseThrow(() -> new EntityNotFoundException(
+                "User has not been found"));
+
+        assertEquals(userBeforeUpdateRole.getEmail(), "test@gmail.com");
+        assertEquals(userBeforeUpdateRole.getRole(), Role.ROLE_USER);
+
+
+        Permission permission = new Permission(createUserCommand.getEmail(), null);
+
+        Gson gson2 = new Gson();
+        String json2 = gson2.toJson(permission);
+        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8000/api/v1/users")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json2)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.message").value("Validation Failed"))
+                .andExpect(jsonPath("$.details[0]").value("NAME_ROLE_NOT_EMPTY"));
+
+    }
+
+
     @Test
     public void testShouldRegisterUser() throws Exception {
         CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");
@@ -122,7 +238,6 @@ public class UserControllerTests {
     }
 
     @Test
-    @Transactional
     public void testShouldAddRole() throws Exception {
 
         CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");

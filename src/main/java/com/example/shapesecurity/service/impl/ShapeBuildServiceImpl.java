@@ -17,11 +17,12 @@ public class ShapeBuildServiceImpl implements ShapeBuildService {
     private static final String DTO = "DTO";
     private final Map<String, ShapeBuilder> shapeBuilders;
     private final Map<String, ShapeDtoMapper> shapeMapperMap;
+
     @Override
     public Map<String, Object> buildShape(CreateShapeCommand createShapeCommand) {
+
         Map<String, Object> map = shapeBuilders.get(createShapeCommand.getType().toUpperCase())
                 .getNewShape(createShapeCommand);
-
         return map;
     }
 

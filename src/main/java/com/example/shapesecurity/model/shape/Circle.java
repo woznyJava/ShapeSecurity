@@ -16,7 +16,6 @@ import javax.persistence.Entity;
 @QueryEntity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Circle extends Shape {
-
     private Double radius;
 
     public Circle(Double radius) {

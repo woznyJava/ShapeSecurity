@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MapStructConfiguration {
-
     @Bean
     public ShapeMapper shapeMapper() {
         return new ShapeMapperImpl();

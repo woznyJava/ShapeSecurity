@@ -20,8 +20,11 @@ public class SquareBuilder implements ShapeBuilder {
         shapeView.setSide(square.getSide());
         shapeView.setArea(square.computeArea());
         shapeView.setPerimeter(square.computePerimeter());
+        shapeView.setType(square.getType());
+        shapeView.setCreatedBy(square.getCreatedBy());
+        shapeView.setCreatedAt(square.getCreatedAt());
         Map<String, Object> map = new HashMap<>();
-        map.put("Shape",square);
+        map.put("Shape", square);
         map.put("ShapeView", shapeView);
         return map;
     }

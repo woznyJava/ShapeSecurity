@@ -42,7 +42,6 @@ public abstract class Shape {
     private ShapeView shapeView;
     @Transient
     public abstract Double computeArea();
-
     @Transient
     public abstract Double computePerimeter();
 }

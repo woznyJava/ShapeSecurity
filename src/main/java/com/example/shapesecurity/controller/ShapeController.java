@@ -2,8 +2,8 @@ package com.example.shapesecurity.controller;
 
 import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.command.CreateShapeCommand;
-import com.example.shapesecurity.model.command.UpdateShapeCommand;
 import com.example.shapesecurity.model.dto.ShapeDto;
+import com.example.shapesecurity.model.shape.Shape;
 import com.example.shapesecurity.service.ShapeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,17 +22,17 @@ public class ShapeController {
 
     @PreAuthorize("hasRole('ROLE_CREATOR')")
     @PostMapping
-    public ResponseEntity<ShapeDto> saveShape( @Valid @RequestBody CreateShapeCommand createRequest) {
+    public ResponseEntity<ShapeDto> saveShape(@Valid @RequestBody CreateShapeCommand createRequest) {
         ShapeDto save = shapeService.save(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(save);
     }
-    @GetMapping
-    public ResponseEntity<List<ShapeDto>> filter(FilterRequest filterRequest) {
-        return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.filter(filterRequest));
-    }
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CREATOR')")
-    @PutMapping("/{id}")
-    public ResponseEntity<ShapeDto> update(@Valid @RequestBody UpdateShapeCommand updateShapeCommand, int id) throws InterruptedException {
-        return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.update(updateShapeCommand, id));
-    }
+
+//    @GetMapping
+//    public ResponseEntity<List<Shape>> filter(FilterRequest filterRequest) {
+//        return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.filtruj(filterRequest));
+//    }
+@GetMapping
+public ResponseEntity<List<Shape>> filter(@RequestBody FilterRequest filterRequest) {
+    return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.filtruj(filterRequest));
+}
 }

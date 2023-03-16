@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     private final JwtServiceImpl jwtServiceImpl;
 
     @Override

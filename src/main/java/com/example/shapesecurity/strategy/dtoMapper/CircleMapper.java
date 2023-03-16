@@ -14,6 +14,7 @@ public class CircleMapper implements ShapeDtoMapper {
     private final ShapeMapper shapeMapper;
     @Override
     public ShapeDto mapShapeToShapeDto(Shape shape) {
+
         Circle circle = (Circle) shape;
         CircleDto circleDto = shapeMapper.fromCircle(circle);
         circleDto.setArea(circle.computeArea());

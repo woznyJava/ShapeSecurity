@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +21,11 @@ public class ShapeView {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String type;
+    private String createdBy;
+    private Long version;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
     private double area;
     private double perimeter;
     private double radius;

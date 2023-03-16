@@ -22,8 +22,11 @@ public class RectangleBuilder implements ShapeBuilder {
         shapeView.setHeight(rectangle.getHeight());
         shapeView.setArea(rectangle.computeArea());
         shapeView.setPerimeter(rectangle.computePerimeter());
+        shapeView.setType(rectangle.getType());
+        shapeView.setCreatedBy(rectangle.getCreatedBy());
+        shapeView.setCreatedAt(rectangle.getCreatedAt());
         Map<String, Object> map = new HashMap<>();
-        map.put("Shape",rectangle);
+        map.put("Shape", rectangle);
         map.put("ShapeView", shapeView);
         return map;
     }

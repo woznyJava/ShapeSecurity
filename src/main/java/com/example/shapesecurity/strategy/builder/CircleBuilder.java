@@ -20,10 +20,12 @@ public class CircleBuilder implements ShapeBuilder {
         shapeView.setRadius(circle.getRadius());
         shapeView.setArea(circle.computeArea());
         shapeView.setPerimeter(circle.computePerimeter());
+        shapeView.setType(circle.getType());
+        shapeView.setCreatedBy(circle.getCreatedBy());
+        shapeView.setCreatedAt(circle.getCreatedAt());
         Map<String, Object> map = new HashMap<>();
         map.put("Shape",circle);
         map.put("ShapeView", shapeView);
         return map;
     }
 }
-// robie mape zamaist shape i wrzucam shape view i shape
