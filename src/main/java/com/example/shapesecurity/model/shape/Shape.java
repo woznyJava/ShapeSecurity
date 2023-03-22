@@ -38,8 +38,8 @@ public abstract class Shape {
     private LocalDateTime lastModifiedAt;
     @LastModifiedBy
     private String lastModifiedBy;
-    @OneToOne(mappedBy = "shape", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ShapeView shapeView;
+//    @OneToOne(mappedBy = "shape", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private ShapeView shapeView;
     @Transient
     public abstract Double computeArea();
     @Transient

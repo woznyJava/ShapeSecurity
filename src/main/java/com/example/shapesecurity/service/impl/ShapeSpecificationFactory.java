@@ -2,7 +2,7 @@ package com.example.shapesecurity.service.impl;
 
 import com.example.shapesecurity.mapper.specification.ShapeSpecification;
 import com.example.shapesecurity.model.FilterRequest;
-import com.example.shapesecurity.model.shape.Shape;
+import com.example.shapesecurity.model.shape.ShapeView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -18,12 +18,12 @@ public class ShapeSpecificationFactory {
     private final Map<String, ShapeSpecification<?>> specifications;
 
 
-    public List<Specification<Shape>> createSpecifications(FilterRequest filterRequest) {
-        List<Specification<Shape>> specs = new ArrayList<>();
+    public List<Specification<ShapeView>> createSpecifications(FilterRequest filterRequest) {
+        List<Specification<ShapeView>> specs = new ArrayList<>();
         for (String key : filterRequest.getMap().keySet()) {
             if (specifications.containsKey(key)) {
                 ShapeSpecification<?> spec = specifications.get(key);
-                Specification<Shape> shapeSpec = (Specification<Shape>) spec.toSpecification(filterRequest);
+                Specification<ShapeView> shapeSpec = (Specification<ShapeView>) spec.toSpecification(filterRequest);
                 if (shapeSpec != null) {
                     specs.add(shapeSpec);
                 }

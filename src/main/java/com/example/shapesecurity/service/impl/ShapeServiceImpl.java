@@ -7,6 +7,7 @@ import com.example.shapesecurity.model.dto.ShapeDto;
 import com.example.shapesecurity.model.shape.Shape;
 import com.example.shapesecurity.model.shape.ShapeView;
 import com.example.shapesecurity.repository.ShapeRepository;
+import com.example.shapesecurity.repository.ShapeViewRepository;
 import com.example.shapesecurity.service.ShapeBuildService;
 import com.example.shapesecurity.service.ShapeService;
 import com.example.shapesecurity.service.ShapeViewService;
@@ -25,13 +26,14 @@ public class ShapeServiceImpl implements ShapeService {
     private final ShapeViewService shapeViewService;
     private final CriteriaFilterShape criteriaFilterShape;
     private final ShapeSpecificationFactory shapeSpecificationFactory;
+    private final ShapeViewRepository shapeViewRepository;
 
     @Override
     public ShapeDto save(CreateShapeCommand createShapeCommand) {
         Map<String, Object> map = shapeBuildService.buildShape(createShapeCommand);
         Shape shape = (Shape) map.get("Shape");
         shapeRepository.save(shape);
-        shapeViewService.save((ShapeView) map.get("ShapeView"));
+//        shapeViewService.save((ShapeView) map.get("ShapeView"));
         return shapeBuildService.buildShapeDto(shape);
     }
 
@@ -41,13 +43,13 @@ public class ShapeServiceImpl implements ShapeService {
     }
 
     @Override
-    public List<Shape> filtruj(FilterRequest filterRequest) {
-        List<Specification<Shape>> specs = shapeSpecificationFactory.createSpecifications(filterRequest);
-        Specification<Shape> combinedSpecs = Specification.where(specs.get(0));
+    public List<ShapeView> filtruj(FilterRequest filterRequest) {
+        List<Specification<ShapeView>> specs = shapeSpecificationFactory.createSpecifications(filterRequest);
+        Specification<ShapeView> combinedSpecs = Specification.where(specs.get(0));
 
         for (int i = 1; i < specs.size(); i++) {
             combinedSpecs = combinedSpecs.and(specs.get(i));
         }
-        return shapeRepository.findAll(combinedSpecs);
+        return shapeViewRepository.findAll(combinedSpecs);
     }
 }

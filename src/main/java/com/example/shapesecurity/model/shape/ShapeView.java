@@ -1,45 +1,37 @@
 package com.example.shapesecurity.model.shape;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.querydsl.core.annotations.QueryEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Immutable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Immutable
 @Entity
-@QueryEntity
-@Table(name = "SHAPE_VIEW")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShapeView {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type;
     private String createdBy;
     private Long version;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+    private String lastModifiedBy;
     private double area;
     private double perimeter;
-    private double radius;
-    private double side;
-    private double height;
-    private double width;
-    @OneToOne
-    @JoinColumn(name = "SHAPE_ID")
-    @JsonIgnoreProperties("shapeView")
-    private Shape shape;
+    private Double radius;
+    private Double side;
+    private Double height;
+    private Double width;
 
-    public ShapeView(double area, double perimeter, Shape shape) {
-        this.area = area;
-        this.perimeter = perimeter;
-        this.shape = shape;
-    }
 }

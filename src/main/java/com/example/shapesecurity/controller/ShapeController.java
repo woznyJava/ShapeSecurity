@@ -3,7 +3,7 @@ package com.example.shapesecurity.controller;
 import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.command.CreateShapeCommand;
 import com.example.shapesecurity.model.dto.ShapeDto;
-import com.example.shapesecurity.model.shape.Shape;
+import com.example.shapesecurity.model.shape.ShapeView;
 import com.example.shapesecurity.service.ShapeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,8 @@ public class ShapeController {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(save);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<Shape>> filter(FilterRequest filterRequest) {
-//        return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.filtruj(filterRequest));
-//    }
 @GetMapping
-public ResponseEntity<List<Shape>> filter(@RequestBody FilterRequest filterRequest) {
+public ResponseEntity<List<ShapeView>> filter(@RequestBody FilterRequest filterRequest) {
     return ResponseEntity.status(HttpStatus.OK.value()).body(shapeService.filtruj(filterRequest));
 }
 }

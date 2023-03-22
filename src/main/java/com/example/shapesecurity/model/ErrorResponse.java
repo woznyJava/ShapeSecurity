@@ -1,17 +1,15 @@
 package com.example.shapesecurity.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Getter
-@Setter
 public class ErrorResponse {
-    private String message;
-    private List<String> details;
+    private final LocalDateTime localDateTime = LocalDateTime.now();
+    private final String message;
+    private final List<String> details;
 }

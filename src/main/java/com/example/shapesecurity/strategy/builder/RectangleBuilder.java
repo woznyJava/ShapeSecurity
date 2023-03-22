@@ -17,7 +17,7 @@ public class RectangleBuilder implements ShapeBuilder {
                 createShapeCommand.getParameters().get("height"));
         rectangle.setType(Rectangle.class.getSimpleName().toUpperCase(Locale.ROOT));
         ShapeView shapeView = new ShapeView();
-        shapeView.setShape(rectangle);
+//        shapeView.setShape(rectangle);
         shapeView.setWidth(rectangle.getWidth());
         shapeView.setHeight(rectangle.getHeight());
         shapeView.setArea(rectangle.computeArea());
@@ -31,4 +31,5 @@ public class RectangleBuilder implements ShapeBuilder {
         return map;
     }
 }
+
 

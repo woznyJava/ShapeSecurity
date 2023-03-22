@@ -5,7 +5,7 @@ import com.example.shapesecurity.model.shape.Shape;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-@Component("SideFrom")
+@Component("sideFrom")
 public class SideFrom implements ShapeSpecification{
     @Override
     public Specification<Shape> toSpecification(FilterRequest filterRequest) {
