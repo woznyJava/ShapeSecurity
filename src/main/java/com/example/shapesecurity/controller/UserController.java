@@ -30,7 +30,7 @@ public class UserController {
 
     @PutMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public void grantPermission(@Valid @RequestBody  Permission permission) {
+    public void grantPermission(@Valid @RequestBody Permission permission) {
         service.grantPermission(permission);
     }
 }

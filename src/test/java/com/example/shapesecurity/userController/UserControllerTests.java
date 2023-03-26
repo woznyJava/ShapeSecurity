@@ -31,13 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserControllerTests {
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -53,8 +50,8 @@ public class UserControllerTests {
                         .content(String.valueOf(json)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("FIRST_NAME_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("firstName: FIRST_NAME_NOT_EMPTY"));
     }
 
     @Test
@@ -69,8 +66,8 @@ public class UserControllerTests {
                         .content(String.valueOf(json)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("LAST_NAME_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("lastName: LAST_NAME_NOT_EMPTY"));
     }
 
     @Test
@@ -85,8 +82,8 @@ public class UserControllerTests {
                         .content(String.valueOf(json)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("EMAIL_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("email: EMAIL_NOT_EMPTY"));
     }
 
     @Test
@@ -101,8 +98,8 @@ public class UserControllerTests {
                         .content(String.valueOf(json)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("PASSWORD_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("password: PASSWORD_NOT_EMPTY"));
     }
 
     @Test
@@ -136,8 +133,8 @@ public class UserControllerTests {
                         .contentType(APPLICATION_JSON)
                         .content(String.valueOf(json2)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("EMAIL_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("email: EMAIL_NOT_EMPTY"));
 
     }
 
@@ -172,8 +169,8 @@ public class UserControllerTests {
                         .contentType(APPLICATION_JSON)
                         .content(String.valueOf(json2)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("NAME_ROLE_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("nameRole: NAME_ROLE_NOT_EMPTY"));
 
     }
 

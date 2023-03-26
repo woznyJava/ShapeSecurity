@@ -11,5 +11,4 @@ public interface UserService {
     AuthenticationResponse authenticate(AuthenticationRequest request);
 
     void grantPermission(Permission permission);
-
 }

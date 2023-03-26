@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component("CIRCLEDTO")
 public class CircleMapper implements ShapeDtoMapper {
     private final ShapeMapper shapeMapper;
+
     @Override
     public ShapeDto mapShapeToShapeDto(Shape shape) {
 

@@ -1,8 +1,9 @@
 package com.example.shapesecurity.service.impl;
 
-import com.example.shapesecurity.mapper.specification.ShapeSpecification;
 import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.shape.ShapeView;
+import com.example.shapesecurity.service.ShapeSpecificationFactory;
+import com.example.shapesecurity.strategy.filter.ShapeSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -13,11 +14,10 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class ShapeSpecificationFactory {
-
+public class ShapeSpecificationFactoryImpl implements ShapeSpecificationFactory {
     private final Map<String, ShapeSpecification<?>> specifications;
 
-
+    @Override
     public List<Specification<ShapeView>> createSpecifications(FilterRequest filterRequest) {
         List<Specification<ShapeView>> specs = new ArrayList<>();
         for (String key : filterRequest.getMap().keySet()) {

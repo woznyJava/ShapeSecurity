@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RectangleMapper implements ShapeDtoMapper {
     private final ShapeMapper shapeMapper;
+
     @Override
     public ShapeDto mapShapeToShapeDto(Shape shape) {
         Rectangle rectangle = (Rectangle) shape;

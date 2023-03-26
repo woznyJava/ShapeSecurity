@@ -1,5 +1,6 @@
 package com.example.shapesecurity.shapeController;
 
+import com.example.shapesecurity.model.FilterRequest;
 import com.example.shapesecurity.model.Permission;
 import com.example.shapesecurity.model.command.CreateShapeCommand;
 import com.example.shapesecurity.model.command.CreateUserCommand;
@@ -28,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @PrepareForTest
 public class ShapeControllerTests {
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -36,14 +36,13 @@ public class ShapeControllerTests {
 
     @Test
     @PrepareForTest(SecurityContextHolder.class)
-    public void testShouldThrowException_PARAMETERS_NOT_EMPTY() throws  Exception{
+    public void testShouldThrowException_PARAMETERS_NOT_EMPTY() throws Exception {
 
         CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");
         Permission permission = new Permission(createUserCommand.getEmail(), "CREATOR");
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(createUserCommand.getEmail(), createUserCommand.getPassword());
         String type = "CIRCLE";
         CreateShapeCommand createShapeCommand = new CreateShapeCommand(type, null);
-
 
         Gson gson = new Gson();
         String json = gson.toJson(createUserCommand);
@@ -80,20 +79,19 @@ public class ShapeControllerTests {
                         .content(String.valueOf(json4)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("PARAMETERS_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("parameters: PARAMETERS_NOT_EMPTY"));
     }
 
     @Test
     @PrepareForTest(SecurityContextHolder.class)
-    public void testShouldThrowException_TYPE_NOT_EMPTY() throws  Exception{
+    public void testShouldThrowException_TYPE_NOT_EMPTY() throws Exception {
 
         CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");
         Permission permission = new Permission(createUserCommand.getEmail(), "CREATOR");
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(createUserCommand.getEmail(), createUserCommand.getPassword());
         Map<String, Double> map = new HashMap<>();
         map.put("radius", 2.0);
-        String type = "CIRCLE";
         CreateShapeCommand createShapeCommand = new CreateShapeCommand(null, map);
 
 
@@ -132,8 +130,8 @@ public class ShapeControllerTests {
                         .content(String.valueOf(json4)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message").value("Validation Failed"))
-                .andExpect(jsonPath("$.details[0]").value("TYPE_NOT_EMPTY"));
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("type: TYPE_NOT_EMPTY"));
     }
 
     @Test
@@ -305,18 +303,27 @@ public class ShapeControllerTests {
         Map<String, Double> map2 = new HashMap<>();
         Map<String, Double> map3 = new HashMap<>();
         Map<String, Double> map4 = new HashMap<>();
+        Map<String, Object> map5 = new HashMap<>();
         map.put("radius", 2.0);
         map2.put("side", 3.0);
         map3.put("width", 4.0);
         map3.put("height", 5.0);
-        map4.put("radius", 7.0);
+        map4.put("height", 7.0);
+        map4.put("width", 10.0);
+        map5.put("createdBy", "test@gmail.com");
+        map5.put("shapeType", "RECTANGLE");
+        map5.put("widthFrom", 3.0);
+        map5.put("heightTo", 6.0);
+
         String type = "CIRCLE";
         String type2 = "SQUARE";
         String type3 = "RECTANGLE";
         CreateShapeCommand createShapeCommand = new CreateShapeCommand(type, map);
         CreateShapeCommand createShapeCommand2 = new CreateShapeCommand(type2, map2);
         CreateShapeCommand createShapeCommand3 = new CreateShapeCommand(type3, map3);
-        CreateShapeCommand createShapeCommand4 = new CreateShapeCommand(type, map4);
+        CreateShapeCommand createShapeCommand4 = new CreateShapeCommand(type3, map4);
+        FilterRequest filterRequest = new FilterRequest(map5);
+
 
         Gson gson = new Gson();
         String json = gson.toJson(createUserCommand);
@@ -326,6 +333,7 @@ public class ShapeControllerTests {
         String json5 = gson.toJson(createShapeCommand2);
         String json6 = gson.toJson(createShapeCommand3);
         String json7 = gson.toJson(createShapeCommand4);
+        String json8 = gson.toJson(filterRequest);
 
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
@@ -402,13 +410,16 @@ public class ShapeControllerTests {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.radius").value(7.0))
-                .andExpect(jsonPath("$.area").value(153.86))
+                .andExpect(jsonPath("$.height").value(7.0))
+                .andExpect(jsonPath("$.width").value(10.0))
+
+                .andExpect(jsonPath("$.area").value(70.0))
                 .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes?createdBy=test@gmail.com&areaFrom=19.0&areaTo=30.0&widthFrom=3.0&heightFrom=4.0")
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes")
                         .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token2))
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json8)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -428,18 +439,26 @@ public class ShapeControllerTests {
         Map<String, Double> map2 = new HashMap<>();
         Map<String, Double> map3 = new HashMap<>();
         Map<String, Double> map4 = new HashMap<>();
+        Map<String, Object> map5 = new HashMap<>();
         map.put("radius", 2.0);
         map2.put("side", 3.0);
         map3.put("width", 4.0);
         map3.put("height", 5.0);
         map4.put("radius", 7.0);
+        map5.put("shapeType", "CIRCLE");
+        map5.put("radiusFrom", 1.0);
+        map5.put("radiusTo", 3.0);
+
         String type = "CIRCLE";
         String type2 = "SQUARE";
         String type3 = "RECTANGLE";
+
         CreateShapeCommand createShapeCommand = new CreateShapeCommand(type, map);
         CreateShapeCommand createShapeCommand2 = new CreateShapeCommand(type2, map2);
         CreateShapeCommand createShapeCommand3 = new CreateShapeCommand(type3, map3);
         CreateShapeCommand createShapeCommand4 = new CreateShapeCommand(type, map4);
+
+        FilterRequest filterRequest = new FilterRequest(map5);
 
         Gson gson = new Gson();
         String json = gson.toJson(createUserCommand);
@@ -449,6 +468,7 @@ public class ShapeControllerTests {
         String json5 = gson.toJson(createShapeCommand2);
         String json6 = gson.toJson(createShapeCommand3);
         String json7 = gson.toJson(createShapeCommand4);
+        String json8 = gson.toJson(filterRequest);
 
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
@@ -531,14 +551,16 @@ public class ShapeControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes?createdBy=test@gmail.com&version=0&radiusFrom=6.0&radiusTo=10.0")
                         .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token2))
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json8)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].id").value(4))
+                .andExpect(jsonPath("$.[0].id").value(1))
                 .andExpect(jsonPath("$.[0].createdBy").value("test@gmail.com"))
                 .andExpect(jsonPath("$.size()").value(1));
     }
+
     @Test
     @PrepareForTest(SecurityContextHolder.class)
     public void shouldFilterShapes_SQUARE() throws Exception {
@@ -549,18 +571,26 @@ public class ShapeControllerTests {
         Map<String, Double> map2 = new HashMap<>();
         Map<String, Double> map3 = new HashMap<>();
         Map<String, Double> map4 = new HashMap<>();
+        Map<String, Object> map5 = new HashMap<>();
+
         map.put("radius", 2.0);
         map2.put("side", 3.0);
         map3.put("width", 4.0);
         map3.put("height", 5.0);
-        map4.put("radius", 7.0);
+        map4.put("side", 7.0);
+        map5.put("sideFrom", 2.0);
+        map5.put("sideTo", 4.0);
+        map5.put("shapeType", "SQUARE");
+        map5.put("createdBy", "test@gmail.com");
         String type = "CIRCLE";
         String type2 = "SQUARE";
         String type3 = "RECTANGLE";
         CreateShapeCommand createShapeCommand = new CreateShapeCommand(type, map);
         CreateShapeCommand createShapeCommand2 = new CreateShapeCommand(type2, map2);
         CreateShapeCommand createShapeCommand3 = new CreateShapeCommand(type3, map3);
-        CreateShapeCommand createShapeCommand4 = new CreateShapeCommand(type, map4);
+        CreateShapeCommand createShapeCommand4 = new CreateShapeCommand(type2, map4);
+
+        FilterRequest filterRequest = new FilterRequest(map5);
 
         Gson gson = new Gson();
         String json = gson.toJson(createUserCommand);
@@ -570,6 +600,7 @@ public class ShapeControllerTests {
         String json5 = gson.toJson(createShapeCommand2);
         String json6 = gson.toJson(createShapeCommand3);
         String json7 = gson.toJson(createShapeCommand4);
+        String json8 = gson.toJson(filterRequest);
 
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
@@ -646,18 +677,151 @@ public class ShapeControllerTests {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.radius").value(7.0))
-                .andExpect(jsonPath("$.area").value(153.86))
+                .andExpect(jsonPath("$.side").value(7.0))
+                .andExpect(jsonPath("$.area").value(49.0))
                 .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes?createdBy=test@gmail.com&version=0&sideFrom=2.0&sideTo=6.0")
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes")
                         .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token2))
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json8)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].id").value(2))
                 .andExpect(jsonPath("$.[0].createdBy").value("test@gmail.com"))
                 .andExpect(jsonPath("$.size()").value(1));
+    }
+
+    @Test
+    @PrepareForTest(SecurityContextHolder.class)
+    public void shouldFilterShapes_ReturnAllShapes() throws Exception {
+
+        CreateUserCommand createUserCommand = new CreateUserCommand("Test", "Test", "test@gmail.com", "Test");
+        Permission permission = new Permission(createUserCommand.getEmail(), "CREATOR");
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(createUserCommand.getEmail(), createUserCommand.getPassword());
+        Map<String, Double> map = new HashMap<>();
+        Map<String, Double> map2 = new HashMap<>();
+        Map<String, Double> map3 = new HashMap<>();
+        Map<String, Double> map4 = new HashMap<>();
+        Map<String, Object> map5 = new HashMap<>();
+
+        map.put("radius", 2.0);
+        map2.put("side", 3.0);
+        map3.put("width", 4.0);
+        map3.put("height", 5.0);
+        map4.put("side", 7.0);
+
+        String type = "CIRCLE";
+        String type2 = "SQUARE";
+        String type3 = "RECTANGLE";
+        CreateShapeCommand createShapeCommand = new CreateShapeCommand(type, map);
+        CreateShapeCommand createShapeCommand2 = new CreateShapeCommand(type2, map2);
+        CreateShapeCommand createShapeCommand3 = new CreateShapeCommand(type3, map3);
+        CreateShapeCommand createShapeCommand4 = new CreateShapeCommand(type2, map4);
+
+        FilterRequest filterRequest = new FilterRequest(map5);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserCommand);
+        String json2 = gson.toJson(permission);
+        String json3 = gson.toJson(authenticationRequest);
+        String json4 = gson.toJson(createShapeCommand);
+        String json5 = gson.toJson(createShapeCommand2);
+        String json6 = gson.toJson(createShapeCommand3);
+        String json7 = gson.toJson(createShapeCommand4);
+        String json8 = gson.toJson(filterRequest);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON));
+
+        Map<String, String> savedToken = objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/authenticate")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json3)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsByteArray(), Map.class);
+
+        String token = savedToken.get("token");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8000/api/v1/users")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(String.valueOf(json2)))
+                .andExpect(status().isOk());
+        Map<String, String> savedToken2 = objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/users/authenticate")
+                        .contentType(APPLICATION_JSON)
+                        .content(String.valueOf(json3)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsByteArray(), Map.class);
+
+        String token2 = savedToken2.get("token");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/shapes")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json4)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.radius").value(2.0))
+                .andExpect(jsonPath("$.area").value(12.56))
+                .andExpect(jsonPath("$.perimeter").value(12.56))
+                .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/shapes")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json5)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.side").value(3.0))
+                .andExpect(jsonPath("$.area").value(9.0))
+                .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/shapes")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json6)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.width").value(4.0))
+                .andExpect(jsonPath("$.height").value(5.0))
+                .andExpect(jsonPath("$.area").value(20.0))
+                .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8000/api/v1/shapes")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json7)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.side").value(7.0))
+                .andExpect(jsonPath("$.area").value(49.0))
+                .andExpect(jsonPath("$.createdBy").value("test@gmail.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8000/api/v1/shapes")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token2)
+                        .content(String.valueOf(json8)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[1].id").value(2))
+                .andExpect(jsonPath("$.[2].id").value(3))
+                .andExpect(jsonPath("$.[3].id").value(4))
+                .andExpect(jsonPath("$.size()").value(4));
     }
 }

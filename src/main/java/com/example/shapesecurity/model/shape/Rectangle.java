@@ -22,6 +22,7 @@ public class Rectangle extends Shape {
         this.width = width;
         this.height = height;
     }
+
     public Double computeArea() {
         return width * height;
     }

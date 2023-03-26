@@ -12,5 +12,5 @@ import java.util.Map;
 @Getter
 @Setter
 public class FilterRequest {
- private Map<String, Object> map;
+    private Map<String, Object> map;
 }

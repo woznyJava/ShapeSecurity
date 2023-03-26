@@ -15,14 +15,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-//    @ExceptionHandler(Exception.class)
-//    public final ResponseEntity<Object> handleAllExceptions(Exception ex) {
-//        List<String> details = new ArrayList<>();
-//        details.add(ex.getLocalizedMessage());
-//        ErrorResponse error = new ErrorResponse("Server Error.", details);
-//        return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public final ResponseEntity<Object> handleIllegalArgumentException(Exception ex) {
         List<String> details = new ArrayList<>();

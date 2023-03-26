@@ -76,7 +76,6 @@ public class UserServiceTests {
         assertEquals(token, response.getToken());
     }
 
-
     @Test
     public void testGrantPermission_shouldAddRole() {
         User user = new User(1, "Test", "Test", "test@gmail.com", "Test", Role.ROLE_USER);
